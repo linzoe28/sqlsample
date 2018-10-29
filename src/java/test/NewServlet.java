@@ -27,7 +27,7 @@ public class NewServlet extends HttpServlet {
 
     static {
         try {
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Class.forName("org.apache.derby.jdbc.ClientDriver"); //只需要進行一次的載入動作，放在靜態區塊較適洽
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(NewServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -49,6 +49,7 @@ public class NewServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
            Connection conn=DriverManager.getConnection("jdbc:derby://localhost:1527/sample","app","app");
            
+           conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(NewServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
