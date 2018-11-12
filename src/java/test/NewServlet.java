@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -17,6 +19,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 /**
  *
@@ -27,11 +30,10 @@ public class NewServlet extends HttpServlet {
 
     static {
         try {
-            Class.forName("org.apache.derby.jdbc.ClientDriver"); //只需要進行一次的載入動作，放在靜態區塊較適洽
+            Class .forName("org.apache.derby.jdbc.ClientDriver");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(NewServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     /**
@@ -48,7 +50,12 @@ public class NewServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
            Connection conn=DriverManager.getConnection("jdbc:derby://localhost:1527/sample","app","app");
-           
+           Statement stmt=conn.createStatement();
+           ResultSet rs=stmt.executeQuery("select * from Login");
+            while (rs.next()) {
+                out.println(rs.getString("ID")+":"+rs.getString("PASSWORD")+"<br/>");
+                
+            }
            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(NewServlet.class.getName()).log(Level.SEVERE, null, ex);
