@@ -24,14 +24,14 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author user
  */
-@WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "AddServlet", urlPatterns = {"/add"})
+public class AddServlet extends HttpServlet {
 
     static {
         try {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -50,16 +50,12 @@ public class LoginServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/sample", "app", "app");
             Statement stmt = conn.createStatement();
-            String id=request.getParameter("id");
-            String pass=request.getParameter("pass");
-            ResultSet rs = stmt.executeQuery("select * from Login where ID='"+id+"'and PASSWORD='"+pass+"'");
-            if(rs.next()){
-                response.sendRedirect("newjsp.jsp");
-            }else{
-                out.print("fail");
-            }
-            
-            conn.close();
+            String id = request.getParameter("id");
+            String pass = request.getParameter("pass");
+            stmt.executeUpdate("insert into Login(ID,PASSWORD) values('"+id+"','"+pass+"')");
+            response.sendRedirect("list.jsp");
+
+        
         } catch (SQLException ex) {
             Logger.getLogger(NewServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
